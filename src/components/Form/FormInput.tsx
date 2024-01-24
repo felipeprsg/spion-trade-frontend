@@ -95,6 +95,9 @@ export const FormInput: React.FC<FormInputProps> = ({
           _active={{ opacity: 0.8 }}
           {...register(name, {
             valueAsNumber: props.type === 'number',
+            ...(props.type === 'date' && {
+              setValueAs: (val: string) => new Date(val),
+            }),
           })}
           {...props}
           type={

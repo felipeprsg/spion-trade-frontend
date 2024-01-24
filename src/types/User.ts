@@ -5,7 +5,7 @@ import { TraderName } from './Trader';
 export type License = {
   id: string;
   email: string;
-  licensedUntil: Timestamp;
+  licensedUntil: Timestamp | Date;
 };
 
 export type Operation = {
@@ -23,12 +23,12 @@ export type BalanceTrack = {
 
 export type User = {
   id: string;
-  createdAt: Timestamp;
+  createdAt: Timestamp | Date;
 
   email: string;
   transacted: number;
 
-  licensedUntil: Timestamp;
+  licensedUntil: Timestamp | Date;
 
   traders: TraderName[];
 
@@ -58,7 +58,7 @@ export type User = {
     stopWin: number;
     stopLoss: number;
 
-    // broker: 'iqoption' | 'dayprofit';
+    broker: 'iqoption' | 'dayprofit';
   } | null;
 
   operations: Operation[];

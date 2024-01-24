@@ -1,8 +1,11 @@
+import { Timestamp } from 'firebase-admin/firestore';
+
 type Serializable =
   | string
   | number
   | boolean
   | null
+  | Date
   | SerializableObject
   | SerializableArray;
 
@@ -13,9 +16,13 @@ interface SerializableObject {
 type SerializableArray = Serializable[];
 
 export function serialize(obj: any): Serializable {
-  if (obj === null) return null;
+  if (obj === null) {
+    return null;
+  }
 
-  if (typeof obj !== 'object') return obj;
+  if (typeof obj !== 'object') {
+    return obj;
+  }
 
   if (Array.isArray(obj)) {
     return obj.map((value) => serialize(value));
@@ -27,6 +34,10 @@ export function serialize(obj: any): Serializable {
 
   if (obj instanceof Set) {
     return Array.from(obj);
+  }
+
+  if (obj instanceof Timestamp) {
+    return obj.toDate();
   }
 
   const serializedObj: { [key: string]: Serializable } = {};

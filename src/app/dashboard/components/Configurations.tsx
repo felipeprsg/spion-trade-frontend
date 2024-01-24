@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   VStack,
@@ -100,6 +100,18 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
     resolver: zodResolver(schema),
   });
 
+  useEffect(() => {
+    if (user && user.isActive && user.config) {
+      const balance = user.balanceTrack[0].balance;
+
+      methods.reset({
+        ...(user.config as FormData),
+        stopWin: user.config.stopWin - balance,
+        stopLoss: balance - user.config.stopLoss,
+      });
+    }
+  }, [methods, user]);
+
   const trader: TraderName = methods.watch('trader');
 
   const currentTrader = trader && getTrader(traders, trader);
@@ -144,6 +156,7 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        broker: 'dayprofit',
         email,
         password,
       }),
@@ -189,7 +202,7 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
       });
     }
 
-    const mode: 'real' | 'demo' = 'demo';
+    const mode: 'real' | 'demo' = 'real';
 
     const balance = { real: realBalance, demo: demoBalance }[mode];
 
@@ -236,6 +249,7 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
         galeMultiplier,
         stopWin: balance + stopWin,
         stopLoss: balance - stopLoss,
+        broker: 'dayprofit',
       },
     });
   }
@@ -250,7 +264,6 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
         p={8}
         pb={4}
         spacing={3}
-        flexGrow={1}
         align="start"
         bgColor="black"
         borderRadius="12px"

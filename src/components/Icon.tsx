@@ -371,4 +371,125 @@ const ICONS = {
       </defs>
     </ChakraIcon>
   ),
+  search: (
+    <ChakraIcon
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.16667 15.8333C12.8486 15.8333 15.8333 12.8486 15.8333 9.16667C15.8333 5.48477 12.8486 2.5 9.16667 2.5C5.48477 2.5 2.5 5.48477 2.5 9.16667C2.5 12.8486 5.48477 15.8333 9.16667 15.8333Z"
+        stroke="#A6A8B1"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17.5 17.5L13.875 13.875"
+        stroke="#A6A8B1"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </ChakraIcon>
+  ),
+  trash: (
+    <ChakraIcon
+      width="21"
+      height="20"
+      viewBox="0 0 21 20"
+      boxSize="21px"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M3.28711 5.00001H4.95378M4.95378 5.00001H18.2871M4.95378 5.00001V16.6667C4.95378 17.1087 5.12937 17.5326 5.44193 17.8452C5.75449 18.1577 6.17842 18.3333 6.62044 18.3333H14.9538C15.3958 18.3333 15.8197 18.1577 16.1323 17.8452C16.4448 17.5326 16.6204 17.1087 16.6204 16.6667V5.00001H4.95378ZM7.45378 5.00001V3.33334C7.45378 2.89131 7.62937 2.46739 7.94193 2.15483C8.25449 1.84227 8.67842 1.66667 9.12044 1.66667H12.4538C12.8958 1.66667 13.3197 1.84227 13.6323 2.15483C13.9448 2.46739 14.1204 2.89131 14.1204 3.33334V5.00001M9.12044 9.16667V14.1667M12.4538 9.16667V14.1667"
+        stroke="currentColor"
+        strokeWidth="1.66667"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </ChakraIcon>
+  ),
+  pencil: (
+    <ChakraIcon
+      width="21"
+      height="20"
+      viewBox="0 0 21 20"
+      boxSize="21px"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14.9536 2.5C15.1725 2.28113 15.4323 2.10752 15.7183 1.98906C16.0043 1.87061 16.3108 1.80965 16.6203 1.80965C16.9298 1.80965 17.2363 1.87061 17.5223 1.98906C17.8082 2.10752 18.0681 2.28113 18.2869 2.5C18.5058 2.71887 18.6794 2.97871 18.7979 3.26468C18.9163 3.55064 18.9773 3.85714 18.9773 4.16667C18.9773 4.4762 18.9163 4.7827 18.7979 5.06866C18.6794 5.35463 18.5058 5.61447 18.2869 5.83334L7.03695 17.0833L2.45361 18.3333L3.70361 13.75L14.9536 2.5Z"
+        stroke="currentColor"
+        strokeWidth="1.66667"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </ChakraIcon>
+  ),
+  'arrow-left': (
+    <ChakraIcon
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      boxSize="20px"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15.8332 10H4.1665M4.1665 10L9.99984 15.8334M4.1665 10L9.99984 4.16669"
+        stroke="currentColor"
+        strokeWidth="1.67"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </ChakraIcon>
+  ),
+  'arrow-right': (
+    <ChakraIcon
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      boxSize="20px"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4.1665 10H15.8332M15.8332 10L9.99984 4.16669M15.8332 10L9.99984 15.8334"
+        stroke="currentColor"
+        strokeWidth="1.67"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </ChakraIcon>
+  ),
+  cloud: (
+    <ChakraIcon
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      boxSize="20px"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g clipPath="url(#clip0_340_1743)">
+        <path
+          d="M6.66698 14.1666L10.0003 17.4999M10.0003 17.4999L13.3336 14.1666M10.0003 17.4999V9.99994M17.4003 15.0749C18.1248 14.5655 18.6681 13.8384 18.9514 12.9992C19.2347 12.1601 19.2432 11.2525 18.9756 10.4081C18.7081 9.56381 18.1785 8.82669 17.4637 8.30375C16.7489 7.78081 15.886 7.49925 15.0003 7.49994H13.9503C13.6997 6.52317 13.2307 5.61598 12.5787 4.84668C11.9268 4.07737 11.1088 3.46599 10.1863 3.05857C9.26387 2.65115 8.26101 2.4583 7.25325 2.49454C6.24548 2.53078 5.25907 2.79517 4.36827 3.2678C3.47747 3.74043 2.7055 4.40898 2.11047 5.22314C1.51544 6.03729 1.11285 6.97582 0.933028 7.96807C0.753202 8.96032 0.800819 9.98044 1.07229 10.9516C1.34377 11.9228 1.83203 12.8198 2.50031 13.5749"
+          stroke="currentColor"
+          strokeWidth="1.66667"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_340_1743">
+          <rect width="20" height="20" fill="white" />
+        </clipPath>
+      </defs>
+    </ChakraIcon>
+  ),
 } as const;

@@ -11,7 +11,9 @@ import * as rest from '@/database/client/functions/rest';
 
 import { Timestamp } from 'firebase/firestore';
 
-import type { License, User } from '@/types/User';
+import type { User } from '@/types/User';
+
+const ADMIN = 'felipe@gmail.com';
 
 interface SignInProps {
   email: string;
@@ -41,8 +43,6 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-
-  console.log({ user });
 
   useEffect(() => {
     return auth.onIdTokenChanged(async (user) => {
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       };
     }
 
-    if (doc.licensedUntil.toDate() < new Date()) {
+    if ((doc.licensedUntil as Timestamp).toDate() < new Date()) {
       await auth.signOut();
 
       return {
@@ -103,7 +103,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     await Login(token);
 
-    router.replace('/dashboard');
+    if (email === ADMIN) {
+      router.replace('/admin');
+    } else {
+      router.replace('/dashboard');
+    }
 
     return result;
   }
@@ -123,7 +127,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       };
     }
 
-    if (license.licensedUntil.toDate() < new Date()) {
+    if ((license.licensedUntil as Timestamp).toDate() < new Date()) {
       await auth.signOut();
 
       return {

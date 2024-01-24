@@ -8,7 +8,11 @@ import { Configurations } from './components/Configurations';
 import { Operations } from './components/Operations';
 import { Chart } from './components/Chart';
 
+import { serialize } from '@/utils/data';
+
 import { getSystemPublic, getTraders } from '@/database/admin/functions/system';
+
+import type { Trader } from '@/types/Trader';
 
 export default async function Dashboard() {
   const [system, traders] = await Promise.all([
@@ -71,11 +75,11 @@ export default async function Dashboard() {
         bg="#00000080"
         flexGrow={1}
         justify="space-between"
-        direction={['column', 'column', 'row']}
+        direction={['column-reverse', 'column-reverse', 'row']}
       >
         <Operations />
         <Chart />
-        <Configurations traders={traders!} />
+        <Configurations traders={serialize(traders) as Trader[]} />
       </Stack>
     </VStack>
   );

@@ -1,4 +1,4 @@
-import { format, parse, isAfter, isBefore, subDays } from 'date-fns';
+import { format, parse, isAfter, isBefore, subDays, addDays } from 'date-fns';
 
 import { Trader } from '@/types/Trader';
 
@@ -8,7 +8,7 @@ export function getTrader(traders: Trader[], name: Trader['name']): Trader {
 
 export function getRecentTrades(trades: Trader['trades'], days: number = 30) {
   return trades.filter((trade) => {
-    const performedAt = trade.performedAt.toDate();
+    const performedAt = trade.performedAt as Date;
     const daysAgo = subDays(new Date(), days);
     return isAfter(performedAt, daysAgo);
   });
@@ -46,8 +46,12 @@ export function getAssertivity(trades: Trader['trades']): {
 export function isCurrentlyOpen(openAt: string, closedAt: string): boolean {
   const now = new Date();
 
-  const openingDateTime = parse(openAt, 'HH:mm', now);
-  const closingDateTime = parse(closedAt, 'HH:mm', now);
+  let openingDateTime = parse(openAt, 'HH:mm', now);
+  let closingDateTime = parse(closedAt, 'HH:mm', now);
+
+  if (isBefore(closingDateTime, openingDateTime)) {
+    closingDateTime = addDays(closingDateTime, 1);
+  }
 
   return isAfter(now, openingDateTime) && isBefore(now, closingDateTime);
 }

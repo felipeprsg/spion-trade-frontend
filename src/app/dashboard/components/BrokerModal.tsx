@@ -69,6 +69,7 @@ export const BrokerModal: React.FC<BrokerModalProps> = ({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        broker: 'dayprofit',
         email,
         password,
       }),

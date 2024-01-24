@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useState } from 'react';
 
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import {
   Modal,
@@ -20,15 +22,15 @@ import {
   DrawerOverlay,
 } from '@chakra-ui/react';
 
-import { Icon } from '@/app/components/Icon';
+import { Icon } from '@/components/Icon';
 
-interface RemoveAffiliateModalContent {
+interface ResetPasswordModalContent {
   isLoading: boolean;
   onClose: () => void;
   handleRemoval: () => Promise<void>;
 }
 
-const RemoveAffiliateModalContent: React.FC<RemoveAffiliateModalContent> = ({
+const ResetPasswordModalContent: React.FC<ResetPasswordModalContent> = ({
   isLoading,
   onClose,
   handleRemoval,
@@ -36,49 +38,57 @@ const RemoveAffiliateModalContent: React.FC<RemoveAffiliateModalContent> = ({
   return (
     <>
       <VStack w="100%" spacing={5}>
-        <Circle size={14} bgColor="failure.50">
-          <Circle size={10} bgColor="failure.100">
-            <Icon name="trash" color="failure.500" boxSize={6} />
+        <Circle size={14} bgColor="#ECFDF3">
+          <Circle size={10} bgColor="#D1FADF">
+            <Icon name="cloud" color="#00835C" boxSize={6} />
           </Circle>
         </Circle>
 
         <VStack spacing={2}>
-          <Heading fontSize="lg">Remover afiliado</Heading>
+          <Heading fontSize="lg">Resetar senha</Heading>
           <Text fontSize="md" textAlign="center">
-            Deseja mesmo remover este afiliado?
+            Deseja mesmo enviar o email de restauração de senha?
           </Text>
         </VStack>
       </VStack>
 
       <HStack w="100%" spacing={3}>
-        <Button variant="secondary" onClick={onClose}>
+        <Button
+          variant="outline"
+          borderColor="gray.400"
+          color="white"
+          onClick={onClose}
+          _hover={{ opacity: 0.75 }}
+          _active={{ opacity: 0.5 }}
+        >
           Agora não
         </Button>
 
         <Button
           variant="primary"
+          color="white"
           isLoading={isLoading}
-          _hover={{ opacity: 0.75 }}
-          _active={{ opacity: 0.75 }}
           onClick={handleRemoval}
+          _hover={{ opacity: 0.75 }}
+          _active={{ opacity: 0.5 }}
         >
-          Remover
+          Enviar
         </Button>
       </HStack>
     </>
   );
 };
 
-interface RemoveAffiliateModalProps {
+interface ResetPasswordModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirmRemoval: () => Promise<void>;
+  onConfirmReset: () => Promise<void>;
 }
 
-export const RemoveAffiliateModal: React.FC<RemoveAffiliateModalProps> = ({
+export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
   isOpen,
   onClose,
-  onConfirmRemoval,
+  onConfirmReset,
 }) => {
   const router = useRouter();
 
@@ -86,23 +96,26 @@ export const RemoveAffiliateModal: React.FC<RemoveAffiliateModalProps> = ({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleConfirmRemoval = async () => {
+  const handleConfirmReset = async () => {
     setIsLoading(true);
-    await onConfirmRemoval();
+
+    await onConfirmReset();
+
     setIsLoading(false);
+
     onClose();
-    router.push({ pathname: router.pathname, query: router.query });
+    // router.push({ pathname: router.pathname, query: router.query });
   };
 
   return !isMobile ? (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="xs">
       <ModalOverlay />
-      <ModalContent bgColor="white" rounded="xl">
+      <ModalContent bgColor="#070707" rounded="xl">
         <ModalBody as={VStack} p={6} spacing={8}>
-          <RemoveAffiliateModalContent
+          <ResetPasswordModalContent
             isLoading={isLoading}
             onClose={onClose}
-            handleRemoval={handleConfirmRemoval}
+            handleRemoval={handleConfirmReset}
           />
         </ModalBody>
       </ModalContent>
@@ -112,10 +125,10 @@ export const RemoveAffiliateModal: React.FC<RemoveAffiliateModalProps> = ({
       <DrawerOverlay />
       <DrawerContent bgColor="white" borderTopRadius="xl">
         <DrawerBody as={VStack} p={6} spacing={8}>
-          <RemoveAffiliateModalContent
+          <ResetPasswordModalContent
             isLoading={isLoading}
             onClose={onClose}
-            handleRemoval={handleConfirmRemoval}
+            handleRemoval={handleConfirmReset}
           />
         </DrawerBody>
       </DrawerContent>

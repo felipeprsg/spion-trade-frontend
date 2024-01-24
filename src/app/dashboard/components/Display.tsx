@@ -128,7 +128,7 @@ export const Display: React.FC = () => {
               </Text>
 
               <Heading mt={2} fontSize="sm" fontWeight="600">
-                {formatDecimal(user?.demoBalance) || `-`}
+                {formatDecimal(user?.realBalance) || `-`}
               </Heading>
             </Circle>
           </Circle>

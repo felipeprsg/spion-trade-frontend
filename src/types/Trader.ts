@@ -13,7 +13,7 @@ export const traders = [
 export type TraderName = (typeof traders)[number];
 
 export type Trade = {
-  performedAt: Timestamp;
+  performedAt: Timestamp | Date;
   active: string;
   direction: 'call' | 'put';
   duration: number;

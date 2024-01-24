@@ -104,10 +104,10 @@ export const Operations: React.FC = () => {
   return (
     <VStack
       w="100%"
+      minH="30rem"
       p={8}
       pb={4}
       spacing={8}
-      flexGrow={1}
       align="start"
       bgColor="black"
       borderRadius="12px"
