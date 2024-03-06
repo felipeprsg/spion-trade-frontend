@@ -21,13 +21,13 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
       bgColor="black"
       bgImage="/assets/blur1.png"
       bgRepeat="no-repeat"
-      bgPosition={['center', 'center', 'right', 'right']}
-      bgSize={['cover', 'cover', 'contain', 'contain']}
+      bgPosition={['bottom', 'bottom', 'bottom', 'bottom']}
+      bgSize={['cover', 'cover', 'cover', 'cover']}
     >
       <Header />
 
       <VStack
-        w={['100%', '100%', '50%']}
+        w="100%"
         h="100%"
         px={6}
         align="center"

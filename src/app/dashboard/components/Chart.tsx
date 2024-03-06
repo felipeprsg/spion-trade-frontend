@@ -65,28 +65,29 @@ export const Chart: React.FC<ChartProps> = ({}) => {
   return (
     <VStack
       w="100%"
+      minH="20rem"
       p={8}
       pb={4}
       spacing={8}
       align="start"
-      bgColor="black"
+      bgColor="gray.500"
       borderRadius="12px"
       borderBottomRadius={['12px', '12px', 'none']}
     >
       <Heading fontSize="md" fontWeight="500">
-        Saldo
+        Rendimento
       </Heading>
 
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" aspect={1}>
         <AreaChart data={data} margin={{ left: -35 }}>
           <defs>
             <linearGradient id="color" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#311A90" stopOpacity={1} />
-              <stop offset="97%" stopColor="#311A90" stopOpacity={0.1} />
+              <stop offset="0%" stopColor="#058859" stopOpacity={1} />
+              <stop offset="97%" stopColor="#058859" stopOpacity={0.1} />
             </linearGradient>
           </defs>
 
-          <Area dataKey="balance" stroke="#311A90" fill="url(#color)" />
+          <Area dataKey="balance" stroke="#058859" fill="url(#color)" />
 
           <XAxis
             dataKey="time"

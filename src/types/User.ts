@@ -1,7 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
 
-import { TraderName } from './Trader';
-
 export type License = {
   id: string;
   email: string;
@@ -30,8 +28,6 @@ export type User = {
 
   licensedUntil: Timestamp | Date;
 
-  traders: TraderName[];
-
   broker: {
     email: string;
     password: string;
@@ -48,7 +44,7 @@ export type User = {
   config: {
     mode: 'real' | 'demo';
 
-    trader: string;
+    strategy: string;
 
     entry: number;
 
@@ -57,8 +53,6 @@ export type User = {
 
     stopWin: number;
     stopLoss: number;
-
-    broker: 'iqoption' | 'dayprofit';
   } | null;
 
   operations: Operation[];

@@ -25,6 +25,12 @@ export const createUser = async (user: User): Promise<void> => {
   await createDocument(data, 'users', id);
 };
 
+export const createLicense = async (
+  license: Omit<License, 'id'>
+): Promise<void> => {
+  await createDocument(license, 'licenses');
+};
+
 // READ
 export const getDocument = async <T>(
   col: string,
@@ -94,6 +100,16 @@ export const getLicense = async (email: string): Promise<License | null> => {
 
 export const getUser = async (uid: string): Promise<User | null> => {
   return await getDocument<User>('users', uid);
+};
+
+export const getUserByEmail = async (email: string): Promise<User | null> => {
+  const docs = await getDocumentsWhere<User>('email', '==', email, 'users');
+
+  if (!docs.length) {
+    return null;
+  }
+
+  return docs[0];
 };
 
 export const getUserOnSnapshot = (

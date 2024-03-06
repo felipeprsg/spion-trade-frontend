@@ -17,7 +17,8 @@ export const Header: React.FC = () => {
       spacing={8}
       align="center"
       justify={['space-between', 'space-between', 'end']}
-      bg="#00000080"
+      borderBottom="solid 1px"
+      borderColor="gray.200"
     >
       <Link href="/auth/login">
         <Button variant="ghost" color="white" fontSize="xs" px={0}>

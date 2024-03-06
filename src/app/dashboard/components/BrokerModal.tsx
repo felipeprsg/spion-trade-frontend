@@ -134,10 +134,10 @@ export const BrokerModal: React.FC<BrokerModalProps> = ({
               <Image alt="Logo" src="/images/logo.png" w="40px" h="40px" />
 
               <Heading fontSize="20px" fontWeight="500">
-                E-Trader Academy
+                IA Spion Trade
               </Heading>
 
-              <Text mt={-4}>Conecte-se à sua conta da Dayprofit</Text>
+              <Text mt={-4}>Conecte-se à sua conta da Exnova</Text>
             </VStack>
 
             <VStack w="100%" mt={2} spacing={4}>

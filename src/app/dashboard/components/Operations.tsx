@@ -2,9 +2,15 @@
 
 import React from 'react';
 
-import { HStack, Heading, VStack, Text, Circle, Box } from '@chakra-ui/react';
-
-import { Icon } from '@/components/Icon';
+import {
+  HStack,
+  Heading,
+  VStack,
+  Text,
+  Circle,
+  Box,
+  Image,
+} from '@chakra-ui/react';
 
 import { useAuth } from '@/app/hooks/useAuth';
 
@@ -64,20 +70,12 @@ const OperationCard: React.FC<OperationCardProps> = ({ operation }) => {
       }}
     >
       <HStack spacing={4} align="center">
-        <Circle size="38px" bgColor="gray.500">
-          <Icon
-            name="arrow"
-            color={victory ? 'green' : 'red'}
-            transform={victory ? 'unset' : 'rotate(180deg)'}
-          />
-        </Circle>
+        <Image alt="" src={victory ? '/images/win.png' : '/images/loss.png'} />
 
-        <VStack spacing={0} align="start">
+        <VStack spacing={0} align="center">
           <Heading color="white" fontSize="xs" fontWeight="500">
             {operation.active}
           </Heading>
-
-          <Text fontSize="10px">{operation.time}</Text>
         </VStack>
       </HStack>
 
@@ -109,12 +107,12 @@ export const Operations: React.FC = () => {
       pb={4}
       spacing={8}
       align="start"
-      bgColor="black"
+      bgColor="gray.500"
       borderRadius="12px"
       borderBottomRadius={['12px', '12px', 'none']}
     >
       <Heading fontSize="md" fontWeight="500">
-        Operações
+        Transações
       </Heading>
 
       <VStack w="100%" p={0} spacing={3}>

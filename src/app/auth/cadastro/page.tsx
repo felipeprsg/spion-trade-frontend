@@ -83,20 +83,20 @@ export default function Signup() {
         as="form"
         noValidate
         onSubmit={methods.handleSubmit(onSubmit)}
-        py={8}
-        px={3}
+        py={10}
+        px={8}
         spacing={8}
-        align="start"
+        align="center"
         justify="center"
-        bgColor="#00000080"
+        bgColor="#131417"
         rounded="20px"
       >
-        <VStack w="100%" align="start" p={0} spacing={2}>
+        <VStack w="100%" align="center" p={0} spacing={2}>
           <Image alt="Logo" src="/images/logo.png" mb={4} />
 
-          <Heading fontSize="20px">E-Trader Academy</Heading>
+          <Heading fontSize="20px">Spion Trade</Heading>
 
-          <Text>Somente emails cadastrados pelo suporte.</Text>
+          <Text>Somente emails com assinatura ativa.</Text>
         </VStack>
 
         <VStack w="100%" spacing={4} align="start">
@@ -167,8 +167,8 @@ export default function Signup() {
           >
             Concordo com os{' '}
             <Link
-              color="#4B2BCB"
-              href="/assets/etrader-academy.pdf"
+              color="primary"
+              href="/assets/spion-trade.pdf"
               isExternal
               download
             >

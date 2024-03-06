@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, SetStateAction, Dispatch } from 'react';
 
 import {
   VStack,
@@ -9,9 +9,8 @@ import {
   Tag,
   TagLabel,
   Text,
-  Circle,
+  Checkbox,
   Grid,
-  GridItem,
   Button,
   useBreakpointValue,
   useToast,
@@ -24,47 +23,43 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useAuth } from '@/app/hooks/useAuth';
 
-import { updateUser } from '@/database/client/functions/rest';
-
 import {
-  getAssertivity,
-  getRecentTrades,
-  getTrader,
-  isCurrentlyOpen,
-} from '../helpers/trades';
+  updateUser,
+  getDocumentOnSnapshot,
+} from '@/database/client/functions/rest';
+
+// import {
+//   getAssertivity,
+//   getRecentTrades,
+//   getTrader,
+//   isCurrentlyOpen,
+// } from '../helpers/trades';
 
 import { formatPercent, formatTime } from '@/utils/format';
 
 import { env } from '@/config/env';
 
-import { Trader, TraderName, traders } from '@/types/Trader';
+import { STRATEGIES, Strategy } from '@/types/Strategies';
 
 import { z } from 'zod';
 
 const schema = z.object({
-  trader: z.enum(traders, {
+  demo: z.boolean().default(false),
+
+  strategy: z.enum(STRATEGIES, {
     required_error: 'Campo obrigatório',
   }),
 
   entry: z
     .number({ errorMap: () => ({ message: 'Campo obrigatório' }) })
     .positive('Valor inválido')
-    .min(5, 'Min. R$ 5,00'),
+    .min(2, 'Min. R$ 2,00'),
 
   gales: z.union([
     z.literal(0, {
       errorMap: () => ({ message: 'Campo Obrigatório' }),
     }),
     z.literal(1, {
-      errorMap: () => ({ message: 'Campo Obrigatório' }),
-    }),
-    z.literal(2, {
-      errorMap: () => ({ message: 'Campo Obrigatório' }),
-    }),
-  ]),
-
-  galeMultiplier: z.union([
-    z.literal(1.5, {
       errorMap: () => ({ message: 'Campo Obrigatório' }),
     }),
     z.literal(2, {
@@ -84,15 +79,25 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 interface ConfigurationsProps {
-  traders: Trader[];
+  setIsDemo: Dispatch<SetStateAction<boolean>>;
 }
 
-export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
+export const Configurations: React.FC<ConfigurationsProps> = ({
+  setIsDemo,
+}) => {
   const { user } = useAuth();
 
-  const isDisabled = !user?.broker || user.isActive;
+  const [assertivities, setAssertivities] = useState<
+    [number, number, number] | null
+  >(null);
 
-  const isMobile = useBreakpointValue([true, false]);
+  useEffect(() => {
+    return getDocumentOnSnapshot('system', 'public', (doc) =>
+      setAssertivities(doc.data()!.assertivities)
+    );
+  }, []);
+
+  const isDisabled = !user?.broker || user.isActive;
 
   const toast = useToast();
 
@@ -105,26 +110,33 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
       const balance = user.balanceTrack[0].balance;
 
       methods.reset({
-        ...(user.config as FormData),
+        ...(user.config as Omit<FormData, 'demo'>),
+        demo: false,
         stopWin: user.config.stopWin - balance,
         stopLoss: balance - user.config.stopLoss,
       });
     }
   }, [methods, user]);
 
-  const trader: TraderName = methods.watch('trader');
+  const strategy: Strategy = methods.watch('strategy');
+  const isDemo = methods.watch('demo');
 
-  const currentTrader = trader && getTrader(traders, trader);
+  useEffect(() => {
+    setIsDemo(isDemo);
+  }, [setIsDemo, isDemo]);
 
-  const trades = trader && currentTrader.trades;
-
-  const account = trader && getAssertivity(getRecentTrades(trades));
-
-  const isOpen =
-    trader && isCurrentlyOpen(currentTrader.openAt, currentTrader.closedAt);
+  const account = {
+    'Copy Top Trader': { assertivity: !assertivities ? 0 : assertivities[0] },
+    'Análise Probabilística': {
+      assertivity: !assertivities ? 0 : assertivities[1],
+    },
+    'Médias Moveis + RSI': {
+      assertivity: !assertivities ? 0 : assertivities[2],
+    },
+  };
 
   const options = Object.fromEntries(
-    user?.traders.map((trader) => [trader, trader]) || []
+    STRATEGIES.map((strategy) => [strategy, strategy]) || []
   );
 
   const [isLoading, setIsLoading] = useState(false);
@@ -141,12 +153,12 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
   }
 
   async function onSubmit({
-    trader,
+    strategy,
     entry,
     gales,
-    galeMultiplier,
     stopWin,
     stopLoss,
+    demo,
   }: FormData) {
     const [email, password] = [user!.broker!.email, user!.broker!.password];
 
@@ -202,7 +214,7 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
       });
     }
 
-    const mode: 'real' | 'demo' = 'real';
+    const mode: 'real' | 'demo' = demo ? 'demo' : 'real';
 
     const balance = { real: realBalance, demo: demoBalance }[mode];
 
@@ -222,10 +234,7 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
       });
     }
 
-    if (
-      (entry / (galeMultiplier - 1)) * (galeMultiplier ** (gales + 1) - 1) >
-      balance
-    ) {
+    if ((entry / (2 - 1)) * (2 ** (gales + 1) - 1) > balance) {
       ok = false;
       methods.setError('gales', {
         message: 'Essa quantidade de gales não atende ao seu saldo.',
@@ -238,18 +247,17 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
 
     await updateUser(user!.id, {
       isActive: true,
-      status: 'Trader em análise',
+      status: 'Analisando possível entrada',
       operations: [],
       balanceTrack: [{ balance: balance, time: formatTime(new Date()) }],
       config: {
         mode,
-        trader,
+        strategy,
         entry,
         gales,
-        galeMultiplier,
+        galeMultiplier: 2,
         stopWin: balance + stopWin,
         stopLoss: balance - stopLoss,
-        broker: 'dayprofit',
       },
     });
   }
@@ -265,24 +273,47 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
         pb={4}
         spacing={3}
         align="start"
-        bgColor="black"
+        bgColor="gray.500"
         borderRadius="12px"
         borderBottomRadius={['12px', '12px', 'none']}
       >
-        <Heading fontSize="md" fontWeight="500">
-          Trade
-        </Heading>
+        <HStack w="100%" justify="space-between">
+          <Heading fontSize="md" fontWeight="500">
+            AI Trade
+          </Heading>
+
+          <Checkbox
+            colorScheme="primary-scheme"
+            color="white"
+            fontSize="xs"
+            fontWeight="400"
+            isDisabled={isDisabled}
+            sx={{
+              '.chakra-checkbox__control': {
+                borderRadius: '4px',
+                border: 'none',
+                color: 'white',
+                bgColor: methods.watch('demo') ? 'orange' : '#17181D',
+                _disabled: {
+                  bgColor: methods.watch('demo') ? 'orange' : '#17181D',
+                },
+              },
+            }}
+            {...methods.register('demo')}
+          >
+            Modo Demo
+          </Checkbox>
+        </HStack>
 
         <FormMenu
-          name="trader"
+          name="strategy"
           options={options}
-          label="Trader"
-          placeholder="Escolha seu trader"
+          label="Estratégia"
+          placeholder="Escolha sua estratégia"
           isDisabled={isDisabled}
-          hasFlag
         />
 
-        {trader && (
+        {strategy && (
           <Grid
             w="100%"
             columnGap={[4]}
@@ -292,46 +323,12 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
           >
             <Tag size="sm" w="min" bgColor="#070707" p={1.5} rounded="3xl">
               <TagLabel color="green" fontSize="10px" fontWeight="500">
-                {formatPercent(account.assertivity)}
+                {formatPercent(account[strategy].assertivity)}
               </TagLabel>
             </Tag>
 
             <Text fontSize="10px" fontWeight="500">
               Assertividade
-            </Text>
-
-            <HStack spacing={1.5} justifySelf="end">
-              <Tag size="sm" bgColor="#070707" p={1.5} rounded="3xl">
-                <TagLabel color="green" fontSize="10px" fontWeight="500">
-                  {isMobile ? `${account.wins}` : `${account.wins} wins`}
-                </TagLabel>
-              </Tag>
-
-              <Tag size="sm" bgColor="#070707" p={1.5} rounded="3xl">
-                <TagLabel color="red" fontSize="10px" fontWeight="500">
-                  {isMobile ? `${account.losses}` : `${account.losses} losses`}
-                </TagLabel>
-              </Tag>
-            </HStack>
-
-            <Tag size="sm" w="min" bgColor="#070707" p={1.5} rounded="3xl">
-              <Circle size={1.5} mr={1} bgColor={isOpen ? 'green' : 'red'} />
-
-              <TagLabel
-                color={isOpen ? 'green' : 'red'}
-                fontSize="10px"
-                fontWeight="500"
-              >
-                {isOpen ? 'Online' : 'Offline'}
-              </TagLabel>
-            </Tag>
-
-            <Text fontSize="10px" fontWeight="500">
-              {isMobile ? 'Funcionamento' : 'Horário de Funcionamento'}
-            </Text>
-
-            <Text fontSize="10px" fontWeight="500" justifySelf="end">
-              {currentTrader.openAt} - {currentTrader.closedAt}
             </Text>
           </Grid>
         )}
@@ -342,17 +339,27 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
           rowGap={5}
           templateColumns={['1fr', '1fr', '1fr', '1fr 1fr']}
         >
-          <GridItem colSpan={[1, 1, 1, 2]}>
-            <FormInput
-              name="entry"
-              type="number"
-              label="Valor de Entrada"
-              labelProps={{ fontSize: '10px' }}
-              placeholder="R$ 0,00"
-              bgColor="#070707"
-              isDisabled={isDisabled}
-            />
-          </GridItem>
+          <FormInput
+            name="entry"
+            type="number"
+            label="Valor de Entrada"
+            labelProps={{ fontSize: '10px' }}
+            placeholder="R$ 0,00"
+            bgColor="#1C1D21"
+            isDisabled={isDisabled}
+          />
+
+          <FormMenu
+            name="gales"
+            options={{
+              '🟢 Conservador': 0,
+              '🟠 Moderado': 1,
+              '🔴 Arrojado': 2,
+            }}
+            label="Gerenciamento"
+            placeholder="Escolher"
+            isDisabled={isDisabled}
+          />
 
           <FormInput
             name="stopWin"
@@ -360,7 +367,7 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
             label="Meta de Ganhos"
             labelProps={{ fontSize: '10px' }}
             placeholder="R$ 0,00"
-            bgColor="#070707"
+            bgColor="#1C1D21"
             isDisabled={isDisabled}
           />
 
@@ -370,30 +377,7 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
             label="Limite de Perdas"
             labelProps={{ fontSize: '10px' }}
             placeholder="R$ 0,00"
-            bgColor="#070707"
-            isDisabled={isDisabled}
-          />
-
-          <FormMenu
-            name="gales"
-            options={{
-              Nenhum: 0,
-              '1 Gale': 1,
-              '2 Gales': 2,
-            }}
-            label="Gales"
-            placeholder="Gales"
-            isDisabled={isDisabled}
-          />
-
-          <FormMenu
-            name="galeMultiplier"
-            options={{
-              '1.5x': 1.5,
-              '2x': 2,
-            }}
-            label="Multiplicador"
-            placeholder="Multiplicador"
+            bgColor="#1C1D21"
             isDisabled={isDisabled}
           />
         </Grid>
@@ -411,7 +395,7 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
             _hover={{ opacity: 0.75 }}
             _active={{ opacity: 0.5 }}
           >
-            Ativar Copy
+            Ligar Spion Trade
           </Button>
         )}
 
@@ -428,7 +412,7 @@ export const Configurations: React.FC<ConfigurationsProps> = ({ traders }) => {
             _hover={{ opacity: 0.75 }}
             _active={{ opacity: 0.5 }}
           >
-            Desativar Copy
+            Desligar Spion Trade
           </Button>
         )}
       </VStack>

@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Etrader Academy',
+  manifest: '/pwa/manifest.json',
+  title: 'Spion Trade',
   description:
-    'Automação de perações binárias. Copy dos melhores traders do mundo!',
+    'Automação de perações binárias. Melhores estratégias automatizadas do mundo!',
   keywords: [
     'dinheiro',
     'renda extra',

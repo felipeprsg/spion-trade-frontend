@@ -37,7 +37,12 @@ export async function isAuthenticated(): Promise<IsAuthenticatedResponse> {
 }
 
 export async function Login(authToken: string): Promise<{ success: boolean }> {
-  const decodedToken = await auth.verifyIdToken(authToken).catch((err) => null);
+  const decodedToken = await auth.verifyIdToken(authToken).catch((err) => {
+    console.error(err);
+    return null;
+  });
+
+  console.log({ decodedToken });
 
   if (!decodedToken) {
     return { success: false };
@@ -51,13 +56,15 @@ export async function Login(authToken: string): Promise<{ success: boolean }> {
     expiresIn,
   });
 
-  cookies().set({
+  const responseCookies = cookies().set({
     name: 'session',
     value: sessionCookie,
     maxAge: expiresIn,
     httpOnly: true,
     secure: true,
   });
+
+  console.log({ responseCookies });
 
   return { success: true };
 }

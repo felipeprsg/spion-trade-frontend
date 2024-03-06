@@ -12,15 +12,20 @@ import {
   Text,
   Circle,
   Stack,
+  Box,
 } from '@chakra-ui/react';
 
 import { Icon } from '@/components/Icon';
 
 import { useAuth } from '@/app/hooks/useAuth';
 
-import { formatCurrency, formatDecimal, formatPercent } from '@/utils/format';
+import { formatDecimal, formatPercent } from '@/utils/format';
 
-export const Display: React.FC = () => {
+interface DisplayProps {
+  isDemo: boolean;
+}
+
+export const Display: React.FC<DisplayProps> = ({ isDemo }) => {
   const { user } = useAuth();
 
   const profit = useMemo(() => {
@@ -45,6 +50,12 @@ export const Display: React.FC = () => {
     );
   }, [user]);
 
+  const balance = useMemo(() => {
+    const condition = user?.isActive ? user.config?.mode === 'demo' : isDemo;
+
+    return condition ? user?.demoBalance : user?.realBalance;
+  }, [user, isDemo]);
+
   const color =
     profit === null
       ? 'gray.400'
@@ -55,67 +66,64 @@ export const Display: React.FC = () => {
       : 'red';
 
   return (
-    <VStack mt={[2, 2, 4]} w="100%" px={[4, 4, 8]} py={0} spacing={0}>
-      <Stack
-        w="100%"
+    <Stack
+      mt={[2, 2, 4]}
+      w="100%"
+      px={[4, 4, 8]}
+      py={0}
+      spacing={4}
+      align="center"
+      justify="space-between"
+      direction={['column', 'column', 'column', 'row']}
+    >
+      {/* <Stack
+        w={['100%', '100%', 'fit-content']}
         spacing={4}
-        align={['end', 'start']}
+        align="center"
         justify="space-between"
-        direction={['column', 'row']}
+        direction={['row', 'row', 'column']}
       >
-        <Stack
-          w={['100%', '100%', 'min']}
-          spacing={4}
-          align="start"
-          justify="space-between"
-          direction={['row', 'row', 'column']}
-        >
-          <Stat color="white">
-            <StatLabel fontSize="md" fontWeight="500">
-              Rendimento
-            </StatLabel>
-            <StatNumber color={color} fontSize="xs" fontWeight="600">
-              {color === 'red' ? '-' : '+'}
-              {formatPercent(Yield && Math.abs(Yield))}
-            </StatNumber>
-          </Stat>
+        <Stat color="white">
+          <StatLabel fontSize="md" fontWeight="500" flexShrink={0}>
+            Rendimento
+          </StatLabel>
+          <StatNumber color={color} fontSize="xs" fontWeight="600">
+            {color === 'red' ? '-' : '+'}
+            {formatPercent(Yield && Math.abs(Yield))}
+          </StatNumber>
+        </Stat>
 
-          <Stat color="white" textAlign={['end', 'start']}>
-            <StatLabel fontSize="md" fontWeight="500">
-              Lucro
-            </StatLabel>
-            <StatNumber color={color} fontSize="xs" fontWeight="600">
-              {formatCurrency(profit) || '-'}
-            </StatNumber>
-          </Stat>
-        </Stack>
+        <Stat color="white" textAlign={['end', 'start']}>
+          <StatLabel fontSize="md" fontWeight="500">
+            Lucro
+          </StatLabel>
+          <StatNumber color={color} fontSize="xs" fontWeight="600">
+            {formatCurrency(profit) || '-'}
+          </StatNumber>
+        </Stat>
+      </Stack> */}
 
-        <HStack
-          w={['unset', '100%', 'unset']}
-          minW="10rem"
-          p={3}
-          spacing={3}
-          justify="start"
-          bgColor="#00000080"
-          rounded="10px"
-          border={['solid 1px', 'solid 1px', 'solid 1px', 'none']}
-          borderColor="gray.400"
-        >
-          <Icon name="warn" color="white" />
+      <Box w="min" alignSelf={['center', 'start']}>
+        <Stat color="white">
+          <StatLabel fontSize="md" fontWeight="500" flexShrink={0}>
+            Rendimento
+          </StatLabel>
+          <StatNumber
+            color={color}
+            fontSize="xs"
+            fontWeight="600"
+            textAlign="center"
+          >
+            {color === 'red' ? '-' : '+'}
+            {formatPercent(Yield && Math.abs(Yield))}
+          </StatNumber>
+        </Stat>
+      </Box>
 
-          <Heading fontSize="10px" fontWeight="700">
-            Status do COPY
-            <Text color="white" fontSize="xs">
-              {user?.status || '-'}
-            </Text>
-          </Heading>
-        </HStack>
-      </Stack>
-
-      <Circle mt={[4, 4, '-6rem']} size="11rem" bgColor="gray.500">
+      <Circle size="11rem" bgColor="gray.500">
         <Circle size="9.5rem" bgColor="primary">
           <Circle size="7rem" bgColor="gray.500">
-            <Circle size="5rem" bgColor="black" pos="relative">
+            <Circle size="5rem" bgColor="#000000E5" pos="relative">
               <Text
                 color="white"
                 fontSize="10px"
@@ -128,12 +136,33 @@ export const Display: React.FC = () => {
               </Text>
 
               <Heading mt={2} fontSize="sm" fontWeight="600">
-                {formatDecimal(user?.realBalance) || `-`}
+                {formatDecimal(balance) || `-`}
               </Heading>
             </Circle>
           </Circle>
         </Circle>
       </Circle>
-    </VStack>
+
+      <HStack
+        w={['unset', '100%', 'unset']}
+        minW="10rem"
+        p={3}
+        spacing={3}
+        justify="start"
+        bgColor="transparent"
+        rounded="10px"
+        border="solid 1px #A6A8B1"
+        alignSelf={['center', 'center', 'center', 'start']}
+      >
+        <Icon name="warn" color="white" />
+
+        <Heading fontSize="10px" fontWeight="700">
+          Status do BOT
+          <Text color="white" fontSize="xs">
+            {user?.status || '-'}
+          </Text>
+        </Heading>
+      </HStack>
+    </Stack>
   );
 };

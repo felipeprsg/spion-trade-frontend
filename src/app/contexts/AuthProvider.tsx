@@ -103,11 +103,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     await Login(token);
 
-    if (email === ADMIN) {
-      router.replace('/admin');
-    } else {
-      router.replace('/dashboard');
-    }
+    // if (email === ADMIN) {
+    //   router.replace('/admin');
+    // } else {
+    // router.replace('/dashboard');
+    // }
+
+    router.replace('/dashboard');
 
     return result;
   }
@@ -119,8 +121,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     let license = await rest.getLicense(email);
 
     if (!license) {
-      await auth.signOut();
-
       return {
         success: false,
         error: 'auth/user-not-licensed',
@@ -128,8 +128,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     if ((license.licensedUntil as Timestamp).toDate() < new Date()) {
-      await auth.signOut();
-
       return {
         success: false,
         error: 'auth/user-not-licensed',
@@ -150,7 +148,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       email: license.email,
       licensedUntil: license.licensedUntil,
       transacted: 0,
-      traders: ['Brandon S.', 'Anisha A.'],
       broker: null,
       status: 'Bot desligado',
       isActive: false,

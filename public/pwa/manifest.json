@@ -1,0 +1,32 @@
+{
+    "theme_color": "#0FD68E",
+    "background_color": "#058859",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "name": "IA Spion Trade",
+    "short_name": "Spion Trade",
+    "description": "Automa\u00e7\u00e3o de Opera\u00e7\u00f5es Bin\u00e1rias",
+    "icons": [
+        {
+            "src": "/pwa/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/pwa/icon-256x256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        },
+        {
+            "src": "/pwa/icon-384x384.png",
+            "sizes": "384x384",
+            "type": "image/png"
+        },
+        {
+            "src": "/pwa/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

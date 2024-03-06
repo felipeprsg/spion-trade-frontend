@@ -1,0 +1,122 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+import {
+  deleteUser,
+  createLicense,
+  getUserByEmail,
+  updateUser,
+  updateDocument,
+  deleteLicense,
+  getLicense,
+} from '@/database/client/functions/rest';
+
+import { Timestamp } from 'firebase/firestore';
+
+function getFutureTimestamp(days: number): Timestamp {
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + days);
+
+  return Timestamp.fromDate(currentDate);
+}
+
+const LICENSE_DAYS = 35;
+
+async function handleSubscribe(email: string): Promise<void> {
+  const user = await getUserByEmail(email);
+
+  const licensedUntil = getFutureTimestamp(LICENSE_DAYS);
+
+  if (!!user) {
+    await updateUser(user.id, {
+      licensedUntil,
+    });
+
+    return;
+  }
+
+  await createLicense({
+    email,
+    licensedUntil,
+  });
+}
+
+async function handleUnsubscribe(email: string): Promise<void> {
+  const user = await getUserByEmail(email);
+
+  if (!!user) {
+    await deleteUser(user.id);
+  }
+
+  const license = await getLicense(email);
+
+  if (!!license) {
+    await deleteLicense(license.id);
+  }
+}
+
+type MonetizzeBody = {
+  comprador: {
+    email: string;
+  };
+  tipoEvento: {
+    codigo: number;
+  };
+};
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json().catch(() => null);
+
+    await updateDocument('logs', 'webhook', {
+      body,
+    });
+
+    console.log({ body });
+
+    if (!body) {
+      return NextResponse.json('5xx', { status: 200 });
+    }
+
+    const {
+      comprador: { email },
+      tipoEvento: { codigo },
+    }: MonetizzeBody = body;
+
+    await updateDocument('logs', 'webhook', {
+      email,
+      codigo,
+    });
+
+    if (!email) {
+      return NextResponse.json('2xx', { status: 200 });
+    }
+
+    if (codigo === 101) {
+      // Assinatura ativa
+      await updateDocument('logs', 'webhook', {
+        ref: 'handleSubscribe',
+      });
+
+      await handleSubscribe(email);
+    }
+
+    if (codigo === 103) {
+      // assinatura cancelada
+      await updateDocument('logs', 'webhook', {
+        ref: 'handleUnsubscribe',
+      });
+
+      await handleUnsubscribe(email);
+    }
+
+    return NextResponse.json('2xx', { status: 200 });
+  } catch (err) {
+    console.error(err);
+
+    await updateDocument('logs', 'webhook', {
+      err: (err as any).toString(),
+    });
+
+    return NextResponse.json('2xx', { status: 200 });
+  }
+}

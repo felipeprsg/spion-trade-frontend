@@ -8,7 +8,6 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  HStack,
   Menu,
   MenuButton,
   MenuItem,
@@ -18,16 +17,12 @@ import {
 } from '@chakra-ui/react';
 
 import { useFormContext } from 'react-hook-form';
-import { Icon } from '../Icon';
-
-import { flags } from '@/types/Trader';
 
 interface FormMenuProps extends ButtonProps {
   name: string;
   label?: string;
   placeholder: string;
   options: Record<string, string | number>;
-  hasFlag?: boolean;
 }
 
 export const FormMenu: React.FC<FormMenuProps> = ({
@@ -35,7 +30,6 @@ export const FormMenu: React.FC<FormMenuProps> = ({
   label,
   placeholder,
   options,
-  hasFlag = false,
   ...props
 }) => {
   const {
@@ -47,8 +41,6 @@ export const FormMenu: React.FC<FormMenuProps> = ({
   } = useFormContext();
 
   const currentValue = watch(name);
-
-  const flag = flags[currentValue as keyof typeof flags];
 
   const current = Object.entries(options).find(
     ([_, value]) => value === currentValue
@@ -89,8 +81,8 @@ export const FormMenu: React.FC<FormMenuProps> = ({
         <MenuButton
           as={Button}
           w="100%"
-          h={12}
-          bgColor="#070707"
+          h={14}
+          bgColor="#1C1D21"
           color="white"
           fontSize="sm"
           fontWeight="400"
@@ -98,12 +90,6 @@ export const FormMenu: React.FC<FormMenuProps> = ({
           border={error && 'solid 2px #E53E3E'}
           rounded="xl"
           textTransform="none"
-          rightIcon={
-            <HStack spacing={2}>
-              {hasFlag && flag && <Icon name={flag as any} />}
-              <Icon name="down" color="white" />
-            </HStack>
-          }
           disabled={optionsLeft.length === 0}
           _hover={{ opacity: 0.8 }}
           _focus={{
@@ -129,15 +115,7 @@ export const FormMenu: React.FC<FormMenuProps> = ({
               _active={{ opacity: 0.8 }}
               onClick={() => handleChange(val)}
             >
-              <HStack w="100%" justify="space-between">
-                <Text color="white">{key}</Text>
-                {hasFlag && flags[key as keyof typeof flags] && (
-                  <Icon
-                    name={flags[key as keyof typeof flags] as any}
-                    boxSize="21px"
-                  />
-                )}
-              </HStack>
+              <Text color="white">{key}</Text>
             </MenuItem>
           ))}
         </MenuList>

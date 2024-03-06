@@ -13,19 +13,20 @@ export const theme = extendTheme({
     body: inter.style.fontFamily,
   },
   colors: {
-    primary: '#311A90',
+    primary: '#058859',
     primaryColorScheme: {
-      500: '#311A90',
+      500: '#058859',
     },
     gray: {
-      200: '#E2E8F0', // for borders
+      200: '#191A1F', // for borders
       400: '#A6A8B1', // for light text (secondary)
-      500: '#0F0F10', // for neutral background
+      500: '#131417', // for neutral background
+      600: '#0F0F10', // for neutral dark
     },
     grayColorScheme: {
       500: '#E2E8F0',
     },
-    green: '#0ECD8D',
+    green: '#058859',
     red: '#C63434',
   },
   components: {
@@ -59,7 +60,7 @@ export const theme = extendTheme({
       },
       variants: {
         primary: {
-          bgColor: '#311A90',
+          bgColor: '#058859',
         },
         ghost: {
           w: 'min',

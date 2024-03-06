@@ -8,13 +8,13 @@ export default function Loading() {
       minH="100vh"
       align="center"
       justify="center"
-      bgColor="black"
+      bgColor="gray.500"
     >
-      <HStack w="fit-content" h="100%" justify="start">
-        <Image alt="Logo" src="/images/logo.png" w="28px" h="28px" />
+      <HStack w="fit-content" h="100%" justify="start" spacing={3}>
+        <Image alt="Logo" src="/images/logo.png" w="35" h="35" />
 
         <Heading fontSize="xs" fontWeight="600" display={['none', 'flex']}>
-          E-Trader Academy
+          Spion Trade
         </Heading>
       </HStack>
     </VStack>

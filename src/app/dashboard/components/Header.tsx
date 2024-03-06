@@ -17,11 +17,7 @@ import { BrokerModal } from './BrokerModal';
 
 import { useAuth } from '@/app/hooks/useAuth';
 
-interface HeaderProps {
-  message: string | null;
-}
-
-export const Header: React.FC<HeaderProps> = ({ message }) => {
+export const Header: React.FC = () => {
   const { user, signOut } = useAuth();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -36,36 +32,15 @@ export const Header: React.FC<HeaderProps> = ({ message }) => {
         px={8}
         spacing={8}
         align="center"
-        bg="#00000080"
+        borderBottom="solid 1px"
+        borderColor="gray.200"
       >
-        <HStack w="100%" h="100%" justify="start">
-          <Image alt="Logo" src="/images/logo.png" w="28px" h="28px" />
+        <HStack w="100%" h="100%" justify="start" spacing={3}>
+          <Image alt="Logo" src="/images/logo.png" w="35" h="35" />
 
           <Heading fontSize="xs" fontWeight="600" display={['none', 'flex']}>
-            E-Trader Academy
+            IA Spion Trade
           </Heading>
-        </HStack>
-
-        <HStack
-          w="100%"
-          h="100%"
-          justify="center"
-          display={['none', 'none', 'flex']}
-        >
-          <HStack
-            h={8}
-            px={3.5}
-            spacing={2}
-            alignSelf="start"
-            borderBottomRadius="10px"
-            bgColor="#070707"
-          >
-            <Icon name="check" color="green" />
-
-            <Text w="100%" color="white" fontSize="xs" fontWeight="500">
-              {message}
-            </Text>
-          </HStack>
         </HStack>
 
         <HStack w="100%" h="100%" spacing={4} justify="end">

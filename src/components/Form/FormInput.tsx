@@ -78,7 +78,7 @@ export const FormInput: React.FC<FormInputProps> = ({
 
         <Input
           id={name}
-          h={12}
+          h={14}
           w="100%"
           pl={icon && 12}
           placeholder={placeholder || label}
@@ -86,7 +86,7 @@ export const FormInput: React.FC<FormInputProps> = ({
           color="gray.400"
           fontSize="md"
           fontWeight="400"
-          bgColor="gray.500"
+          bgColor="#0F0F10"
           rounded="xl"
           border="none"
           errorBorderColor="red.500"

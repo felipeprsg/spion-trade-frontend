@@ -64,18 +64,18 @@ export default function Login() {
         as="form"
         noValidate
         onSubmit={methods.handleSubmit(onSubmit)}
-        py={8}
-        px={3}
+        py={10}
+        px={8}
         spacing={8}
-        align="start"
+        align="center"
         justify="center"
-        bgColor="#00000080"
+        bgColor="#131417"
         rounded="20px"
       >
-        <VStack w="100%" align="start" p={0} spacing={2}>
+        <VStack w="100%" align="center" p={0} spacing={2}>
           <Image alt="Logo" src="/images/logo.png" mb={4} />
 
-          <Heading fontSize="20px">E-Trader Academy</Heading>
+          <Heading fontSize="20px">IA Spion Trade</Heading>
 
           <Text>Conecte a sua conta para começar a lucrar.</Text>
         </VStack>
